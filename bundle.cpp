@@ -1,25 +1,44 @@
 #include "bundle.h"
 
 Bundle::Bundle(){
+    this->name = "";
     this->inFile = "";
     this->outFile = "";
 }
 
-Bundle::Bundle(std::vector<std::string> commands){
+Bundle::~Bundle(){
+    this->name = "";
+    this->inFile = "";
+    this->outFile = "";
+    this->commands.clear();
+}
+
+Bundle::Bundle(std::string name, std::vector<std::string> commands){
+    this->name = "";
     this->inFile = "";
     this->outFile = "";
     set_commands(commands);
 }
 
-Bundle::Bundle(std::string infile, std::string outfile){
+Bundle::Bundle(std::string name, std::string infile, std::string outfile){
+    this->name = name;
     this->inFile = infile;
     this->outFile = outfile;
 }
 
-Bundle::Bundle(std::string infile, std::string outfile, std::vector<std::string> commands){
+Bundle::Bundle(std::string name, std::string infile, std::string outfile, std::vector<std::string> commands){
+    this->name = name;
     this->inFile = infile;
     this->outFile = outfile;
     set_commands(commands);
+}
+
+void Bundle::set_name(std::string name){
+    this->name = name;
+}
+
+std::string Bundle::get_name(){
+    return this->name;
 }
 
 void Bundle::set_inFile(std::string inFile){
@@ -45,6 +64,10 @@ void Bundle::set_commands(std::vector<std::string> commands){
     }
 }
 
+void Bundle::add_command(std::string cmd){
+    this->commands.push_back(cmd);
+}
+
 std::vector<std::string> Bundle::get_commands(){
     return this->commands;
 }
@@ -57,4 +80,12 @@ Bundle& Bundle::operator=(const Bundle& other){
         
     }
     return *this;
+}
+
+void Bundle::print(){
+    int n = this->commands.size();
+    std::cout << "Bundle Name: \"" << this->name << "\"" << std::endl;
+    for(int i = 0; i < n; i++){
+        std::cout << "Command " << i << "  : \"" << this->commands[i] << "\"" << std::endl;
+    }
 }
