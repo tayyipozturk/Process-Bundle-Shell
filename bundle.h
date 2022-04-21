@@ -25,10 +25,10 @@ class Bundle{
     Bundle(std::string name, std::vector<std::string> commands);
 
     //Constructor
-    Bundle(std::string name, std::string infile, std::string outfile);
+    Bundle(std::string name, std::string inFile, std::string outFile);
 
     //Constructor
-    Bundle(std::string name, std::string infile, std::string outfile, std::vector<std::string> commands);
+    Bundle(std::string name, std::string inFile, std::string outFile, std::vector<std::string> commands);
 
     //Set bundle name
     void set_name(std::string name);

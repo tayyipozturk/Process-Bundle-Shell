@@ -20,16 +20,16 @@ Bundle::Bundle(std::string name, std::vector<std::string> commands){
     set_commands(commands);
 }
 
-Bundle::Bundle(std::string name, std::string infile, std::string outfile){
+Bundle::Bundle(std::string name, std::string inFile, std::string outFile){
     this->name = name;
-    this->inFile = infile;
-    this->outFile = outfile;
+    this->inFile = inFile;
+    this->outFile = outFile;
 }
 
-Bundle::Bundle(std::string name, std::string infile, std::string outfile, std::vector<std::string> commands){
+Bundle::Bundle(std::string name, std::string inFile, std::string outFile, std::vector<std::string> commands){
     this->name = name;
-    this->inFile = infile;
-    this->outFile = outfile;
+    this->inFile = inFile;
+    this->outFile = outFile;
     set_commands(commands);
 }
 
