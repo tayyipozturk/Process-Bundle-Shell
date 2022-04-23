@@ -1,2 +1,2 @@
 all:
-	g++ shell.cpp parser.c bundle.cpp -o hw1
+	g++ shell.cpp parser.c bundle.cpp functions.cpp -o hw1

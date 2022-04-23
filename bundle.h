@@ -3,16 +3,18 @@
 
 #include <cctype>
 #include <cstdlib>
-#include <string>
+#include <cstring>
 #include <cstdio>
-#include <iostream>
+#include <string>
 #include <vector>
+#include <iostream>
+#include <unistd.h>
 
 class Bundle{
     std::string name;
     std::string inFile;
     std::string outFile;
-    std::vector<std::string> commands;
+    std::vector<char**> commands;
 
     public:
     //Constructor
@@ -22,13 +24,18 @@ class Bundle{
     ~Bundle();
 
     //Constructor
-    Bundle(std::string name, std::vector<std::string> commands);
+    Bundle(std::string name, std::vector<char**> commands);
 
     //Constructor
     Bundle(std::string name, std::string inFile, std::string outFile);
 
     //Constructor
-    Bundle(std::string name, std::string inFile, std::string outFile, std::vector<std::string> commands);
+    Bundle(std::string name, std::string inFile, std::string outFile, std::vector<char**> commands);
+
+    //Execute the bundle
+    int execute(Bundle* bundle, int num_bundles, int place_of_bundle);
+
+    void pipe(Bundle* left, Bundle* right);
 
     //Set bundle name
     void set_name(std::string name);
@@ -49,13 +56,13 @@ class Bundle{
     std::string get_outFile();
 
     //Set shell commands
-    void set_commands(std::vector<std::string> commands);
+    void set_commands(std::vector<char**> commands);
 
     //Add shell command
-    void add_command(std::string cmd);
+    void add_command(char** cmd);
 
     //Get shell commands
-    std::vector<std::string> get_commands();
+    std::vector<char**> get_commands();
 
     //Assignment operator for Bundle object
     Bundle& operator=(const Bundle& other);

@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "bundle.h"
+#include "functions.h"
 
 int main(){
 	
@@ -18,13 +19,37 @@ int main(){
 
 	while(1){
 		oneStepBefore = isBundleCreation;
-		parsedInput->command.type = PROCESS_BUNDLE_CREATE;
 		temp = parse(buffer, isBundleCreation, parsedInput);
 
 		//If command is not pbs
 		if(!temp){
 			if(parsedInput->command.type == PROCESS_BUNDLE_EXECUTION){
 				isBundleCreation=0;
+				int n = parsedInput->command.bundle_count;
+				std::vector<int> queue;
+				for(int i=0;i<n;i++){
+					int index = findBundle(bundles, parsedInput->command.bundles[i].name);
+					//If the executed bundle is created before
+					if(index != -1){
+						queue.push_back(index);
+						if(parsedInput->command.bundles[i].input){
+							bundles[index].set_inFile(parsedInput->command.bundles[i].input);
+						}
+						else{
+							bundles[index].set_inFile("");
+						}
+						if(parsedInput->command.bundles[i].output){
+							bundles[index].set_outFile(parsedInput->command.bundles[i].output);
+						}
+						else{
+							bundles[index].set_outFile("");
+						}
+					}
+				}
+				n = queue.size();
+				for(int i=0;i<n;i++){
+					bundles[queue[i]].print();
+				}
 			}
 			else if(parsedInput->command.type == PROCESS_BUNDLE_STOP){
 				isBundleCreation=0;
@@ -32,6 +57,7 @@ int main(){
 			else if(parsedInput->command.type == QUIT){
 				isBundleCreation=0;
 			}
+			//PROCESS_BUNDLE_CREATE;
 			else{
 				isBundleCreation=1;
 			}
@@ -57,15 +83,15 @@ int main(){
 		}
 		//taking shell commands (arguments of bundle)
 		else if(oneStepBefore && isBundleCreation){
-			std::string cmd = "";
+			/*std::string cmd = "";
 			for(int i=0;parsedInput->argv[i];i++){
 				//std::cout<<"ARGV: "<<parsedInput->argv[i]<<std::endl;
 				if(i){
 					cmd += " ";
 				}
 				cmd += parsedInput->argv[i];
-			}
-			bundle.add_command(cmd);
+			}*/
+			bundle.add_command(parsedInput->argv);
 			//std::cout<<"CMD: \""<<cmd<<"\""<<std::endl;
 		}
 		//executing bundle or quit
