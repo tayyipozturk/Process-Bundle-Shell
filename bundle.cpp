@@ -33,29 +33,34 @@ Bundle::Bundle(std::string name, std::string inFile, std::string outFile, std::v
     set_commands(commands);
 }
 
-int Bundle::execute(Bundle *bundle, int num_bundles, int place_of_bundle){
-    std::vector<char**> cmd = bundle->get_commands();
+int Bundle::execute(){
+    std::vector<char**> cmd = this->get_commands();
     std::vector<pid_t> pids;
-    bool existsInFile = false;
-    bool existsOutFile = false;
-
-    if(bundle->get_inFile() != ""){
-        existsInFile = true;
-    }
-    if(bundle->get_outFile() != ""){
-        existsOutFile = true;
-    }
 
     for(int i = 0; i < cmd.size(); i++){
         char **command = cmd[i];
         pid_t pid = fork();
         //Child process
         if(pid == 0){
+            if(inFile != ""){
+                int infile_desc = open(this->inFile.c_str(), O_RDONLY, 0666);
+                dup2(infile_desc, 0);
+                close(infile_desc);
+            }
+
+            if(outFile!=""){
+                int outfile_desc = open(this->outFile.c_str(), O_CREAT | O_APPEND | O_WRONLY, 00700);
+                dup2(outfile_desc, STDOUT_FILENO);
+                close(outfile_desc);
+            }
             int status = execvp(command[0], command);
             if(status == -1){
                 std::cout << "Error: " << strerror(errno) << std::endl;
                 exit(1);
             }
+            
+            
+
         exit(0);
         }
         else{
@@ -65,8 +70,8 @@ int Bundle::execute(Bundle *bundle, int num_bundles, int place_of_bundle){
     //Wait for child processes to finish
     for(int i = 0; i < pids.size(); i++){
         int status;
+        std::cout<< "Waiting process " << i << std::endl;
         waitpid(pids[i], &status, 0);
-        std::cout<<i<<" :"<< cmd[i][0] << std::endl; 
     }
     return 0;
 }
@@ -135,7 +140,7 @@ void Bundle::print(){
         std::cout<<std::endl;
     }
     if(inFile != ""){
-            std::cout << "Infile: \"" << this->inFile << "\"" << std::endl;
+        std::cout << "Infile: \"" << this->inFile << "\"" << std::endl;
     }
     if(outFile != ""){
         std::cout << "Outfile: \"" << this->outFile << "\"" << std::endl;

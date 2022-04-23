@@ -7,8 +7,12 @@
 #include <cstdio>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <iostream>
+#include <fcntl.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 class Bundle{
     std::string name;
@@ -33,8 +37,9 @@ class Bundle{
     Bundle(std::string name, std::string inFile, std::string outFile, std::vector<char**> commands);
 
     //Execute the bundle
-    int execute(Bundle* bundle, int num_bundles, int place_of_bundle);
+    int execute();
 
+    //Pipe two consecutive bundles
     void pipe(Bundle* left, Bundle* right);
 
     //Set bundle name

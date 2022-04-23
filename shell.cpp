@@ -46,10 +46,14 @@ int main(){
 						}
 					}
 				}
-				n = queue.size();
 				for(int i=0;i<n;i++){
+					bundles[queue[i]].execute();
 					bundles[queue[i]].print();
 				}
+				queue.clear();
+
+
+
 			}
 			else if(parsedInput->command.type == PROCESS_BUNDLE_STOP){
 				isBundleCreation=0;
