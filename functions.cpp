@@ -48,8 +48,7 @@ void init_pipe(std::vector<Bundle>& bundles, std::vector<int>& queue){
             if(parent){
                 for(int i = 0; i < pids.size(); i++){
                     int status;
-                    //std::cout<< "Waiting process " << i << std::endl;
-                    waitpid(pids[i], &status, 0);
+                    wait(&status);
                 }
             }
         }
@@ -88,7 +87,7 @@ void init_pipe(std::vector<Bundle>& bundles, std::vector<int>& queue){
                 for(int i = 0; i < pids.size(); i++){
                     int status;
                     //std::cout<< "Waiting process " << i << std::endl;
-                    waitpid(pids[i], &status, 0);
+                    wait(&status);
                 }
             }
         }
@@ -107,7 +106,6 @@ void init_pipe(std::vector<Bundle>& bundles, std::vector<int>& queue){
                     dup2(fd[1], STDOUT_FILENO);
                     close(distribute[0]);
                     close(fd[1]);
-
                     write(distribute[1], memo, 16392);
                     close(distribute[0]);
                     close(distribute[1]);
@@ -121,8 +119,7 @@ void init_pipe(std::vector<Bundle>& bundles, std::vector<int>& queue){
             if(parent){
                 for(int i = 0; i < pids.size(); i++){
                     int status;
-                    //std::cout<< "Waiting process " << i << std::endl;
-                    waitpid(pids[i], &status, 0);
+                    wait(&status);
                 }
             }
         }
