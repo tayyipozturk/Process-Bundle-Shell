@@ -33,53 +33,6 @@ Bundle::Bundle(std::string name, std::string inFile, std::string outFile, std::v
     set_commands(commands);
 }
 
-int Bundle::execute(){
-    std::vector<char**> cmd = this->get_commands();
-    std::vector<pid_t> pids;
-
-    for(int i = 0; i < cmd.size(); i++){
-        char **command = cmd[i];
-        pid_t pid = fork();
-        //Child process
-        if(pid == 0){
-            if(inFile != ""){
-                int infile_desc = open(this->inFile.c_str(), O_RDONLY, 0666);
-                dup2(infile_desc, 0);
-                close(infile_desc);
-            }
-
-            if(outFile!=""){
-                int outfile_desc = open(this->outFile.c_str(), O_CREAT | O_APPEND | O_WRONLY, 00700);
-                dup2(outfile_desc, STDOUT_FILENO);
-                close(outfile_desc);
-            }
-            int status = execvp(command[0], command);
-            if(status == -1){
-                std::cout << "Error: " << strerror(errno) << std::endl;
-                exit(1);
-            }
-            
-            
-
-        exit(0);
-        }
-        else{
-            pids.push_back(pid);
-        }
-    }
-    //Wait for child processes to finish
-    for(int i = 0; i < pids.size(); i++){
-        int status;
-        std::cout<< "Waiting process " << i << std::endl;
-        waitpid(pids[i], &status, 0);
-    }
-    return 0;
-}
-
-void Bundle::pipe(Bundle* left, Bundle* right){
-    int x = 1;
-}
-
 void Bundle::set_name(std::string name){
     this->name = name;
 }
@@ -145,4 +98,48 @@ void Bundle::print(){
     if(outFile != ""){
         std::cout << "Outfile: \"" << this->outFile << "\"" << std::endl;
     }
+}
+
+int Bundle::execute(){
+    std::vector<char**> cmd = this->get_commands();
+    std::vector<pid_t> pids;
+    int parent = 1;
+
+    for(int i = 0; i < cmd.size(); i++){
+        char **command = cmd[i];
+        pid_t pid = fork();
+        //Child process
+        if(pid == 0){
+            parent=0;
+            if(inFile != ""){
+                int infile_desc = open(this->inFile.c_str(), O_RDONLY, 00700);
+                dup2(infile_desc, 0);
+                close(infile_desc);
+            }
+
+            if(outFile!=""){
+                int outfile_desc = open(this->outFile.c_str(), O_CREAT | O_APPEND | O_WRONLY, 00700);
+                dup2(outfile_desc, STDOUT_FILENO);
+                close(outfile_desc);
+            }
+            int status = execvp(command[0], command);
+            if(status == -1){
+                std::cout << "Error: " << strerror(errno) << std::endl;
+                exit(1);
+            }
+            exit(0);
+        }
+        else{
+            pids.push_back(pid);
+        }
+    }
+    //Wait for child processes to finish
+    if(parent){
+        for(int i = 0; i < pids.size(); i++){
+            int status;
+            //std::cout<< "Waiting process " << i << std::endl;
+            waitpid(pids[i], &status, 0);
+        }
+    }
+    return 0;
 }

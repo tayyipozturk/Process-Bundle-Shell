@@ -46,14 +46,15 @@ int main(){
 						}
 					}
 				}
-				for(int i=0;i<n;i++){
-					bundles[queue[i]].execute();
-					bundles[queue[i]].print();
+				//Single bundle execution
+				if(n==1){
+					bundles[queue[0]].execute();
+				}
+				//Pipe execution
+				else{
+					init_pipe(bundles, queue);
 				}
 				queue.clear();
-
-
-
 			}
 			else if(parsedInput->command.type == PROCESS_BUNDLE_STOP){
 				isBundleCreation=0;
@@ -70,7 +71,6 @@ int main(){
 		else{
 			isBundleCreation=0;
 		}
-
 		//Infer if there exists any command or sequence of shell commands (arguments of bundle)
 		//pbc command
 		if(!oneStepBefore && isBundleCreation){
@@ -105,9 +105,7 @@ int main(){
 				break;
 			}
 		}
-
 		//std::cout<<std::endl;
-
 		memset(parsedInput,0,sizeof(char)*257);
 		memset(buffer, 0, sizeof(char)*257);
 		std::cin.getline(buffer,sizeof(char)*257);
@@ -118,6 +116,5 @@ int main(){
 			bundles[i].print();
 			std::cout << std::endl;
 	}*/
-	
 	return 0;
 }

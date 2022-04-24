@@ -19,7 +19,7 @@ class Bundle{
     std::string inFile;
     std::string outFile;
     std::vector<char**> commands;
-
+    
     public:
     //Constructor
     Bundle();
@@ -35,12 +35,6 @@ class Bundle{
 
     //Constructor
     Bundle(std::string name, std::string inFile, std::string outFile, std::vector<char**> commands);
-
-    //Execute the bundle
-    int execute();
-
-    //Pipe two consecutive bundles
-    void pipe(Bundle* left, Bundle* right);
 
     //Set bundle name
     void set_name(std::string name);
@@ -72,7 +66,11 @@ class Bundle{
     //Assignment operator for Bundle object
     Bundle& operator=(const Bundle& other);
 
+    //Print bundle info
     void print();
+
+    //Execute just the specified bundle
+    int execute();
 };
 
 #endif
